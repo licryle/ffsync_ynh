@@ -1,22 +1,80 @@
 #!/bin/bash
 
-# Source app helpers
-. /usr/share/yunohost/helpers
 
-db_user=ffsync
-db_name=ffsync
-root_pwd=$(sudo cat /etc/yunohost/mysql)
-domain=$(ynh_app_setting_get ffsync domain)
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-mysql -u root -p$root_pwd -e "DROP DATABASE $db_name ; DROP USER $db_user@localhost ;"
-sudo rm -rf /opt/yunohost/ffsync
-sudo rm -f /etc/nginx/conf.d/$domain.d/ffsync.conf
-sudo service ffsync stop
-sudo update-rc.d ffsync remove
-sudo rm /etc/init.d/ffsync
-sudo rm /etc/logrotate.d/ffsync
-sudo yunohost service remove ffsync
+source _common.sh
+source /usr/share/yunohost/helpers
 
-sudo service nginx reload
-sudo userdel ffsync
-sudo delgroup ffsync
+#=================================================
+# LOAD SETTINGS
+#=================================================
+
+app=$YNH_APP_INSTANCE_NAME
+
+domain=$(ynh_app_setting_get "$app" domain)
+final_path=$(ynh_app_setting_get "$app" final_path)
+db_user=$app
+db_name=$app
+
+#=================================================
+# STANDARD REMOVE
+#=================================================
+# STOP AND REMOVE SERVICE
+#=================================================
+
+ynh_remove_systemd_config
+
+#=================================================
+# REMOVE SERVICE FROM ADMIN PANEL
+#=================================================
+
+if yunohost service status | grep -q "$app"
+then
+	echo "Remove $app service"
+	yunohost service remove "$app"
+fi
+
+#=================================================
+# REMOVE DEPENDENCIES
+#=================================================
+
+# Remove metapackage and its dependencies
+ynh_remove_app_dependencies
+
+#=================================================
+# REMOVE THE MYSQL DATABASE
+#=================================================
+
+ynh_mysql_remove_db "$db_user" "$db_name"
+
+#=================================================
+# REMOVE APP MAIN DIR
+#=================================================
+
+ynh_secure_remove "$final_path"
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+
+ynh_remove_nginx_config
+
+#=================================================
+# REMOVE LOGROTATE CONFIGURATION
+#=================================================
+
+ynh_remove_logrotate
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# REMOVE DEDICATED USER
+#=================================================
+
+# Delete a system user
+ynh_system_user_delete "$app"

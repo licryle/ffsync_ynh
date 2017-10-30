@@ -1,0 +1,4 @@
+SOURCE_URL=https://github.com/mozilla-services/syncserver/archive/1.5.2.zip
+SOURCE_SUM=2ce201626b720589d1916972cac0cfdec27db42992924b7fb7fef5ae92a148d8
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=zip

@@ -1,7 +1,8 @@
 {
     "name": "Firefox Sync Server",
     "id": "ffsync",
-    "url": "https://github.com/abeudin/ffsync_ynh",
+    "version": "1.5.2",
+    "url": "https://github.com/mozilla-services/syncserver",
     "packaging_format": 1,
     "description": {
         "en": "Mozilla’s Sync-Server to host your Firefox account data",
@@ -13,13 +14,13 @@
         "url": "https://github.com/balu-/FSyncMS"
     },
     "requirements": {
-        "yunohost": ">> 2.4.0"
+        "yunohost": ">=2.7.0"
 	},
-	"license": "free",
+	"license": "MPL-2.0",
 	"services": [
         "nginx"
 	],
-    "multi_instance": false,
+    "multi_instance": true,
     "arguments": {
         "install" : [
             {
