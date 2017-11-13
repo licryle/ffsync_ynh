@@ -1,7 +1,7 @@
 {
     "name": "Firefox Sync Server",
     "id": "ffsync",
-    "version": "1.5.2",
+    "version": "1.6.0",
     "url": "https://github.com/mozilla-services/syncserver",
     "packaging_format": 1,
     "description": {

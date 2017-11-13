@@ -11,6 +11,10 @@
 		setup_private=1
 		setup_public=0
 		upgrade=1
+		; test upgrade from latest published version
+		upgrade=1	from_commit=fd6350495d5a1d864ae30e1a61e18939fdb6a428
+		; test upgrade from latest git commit before Jibec's rewriting
+		upgrade=1	from_commit=267ccc21f7b52d22bc3d5b9cd6239857b9a82aad
 		backup_restore=1
 		multi_instance=1
 		port_already_use=0
