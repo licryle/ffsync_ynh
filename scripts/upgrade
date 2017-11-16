@@ -26,7 +26,7 @@ app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get "$app" domain)
 path_url=$(ynh_app_setting_get "$app" path_url)
 db_name=$(ynh_app_setting_get "$app" db_name)
-db_pwd=$(ynh_app_setting_get "$app" db_pwd)
+db_pwd=$(ynh_app_setting_get "$app" mysqlpwd)
 db_user=$app
 final_path=$(ynh_app_setting_get "$app" final_path)
 secret=$(ynh_app_setting_get "$app" secret)
@@ -45,6 +45,18 @@ fi
 if [ -z "$final_path" ]; then
 	final_path=/var/www/$app
 	ynh_app_setting_set "$app" final_path "$final_path"
+fi
+
+# Detect old installation style
+if [ -e /opt/yunohost/ffsync ]; then
+	service ffsync stop
+	update-rc.d -f ffsync remove
+
+	ynh_secure_remove /etc/init.d/ffsync
+	ynh_secure_remove /var/log/ffsync.log
+	ynh_secure_remove /opt/yunohost/ffsync
+
+	ynh_add_systemd_config
 fi
 
 #=================================================
@@ -157,5 +169,6 @@ ynh_app_setting_set "$app" skipped_uris "/"
 # RELOAD NGINX
 #=================================================
 
+systemctl stop "$app.service"
 systemctl start "$app.service"
 systemctl reload nginx
