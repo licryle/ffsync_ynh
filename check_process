@@ -4,13 +4,13 @@
 		domain="domain.tld"	(DOMAIN)
 		path="/path"	(PATH)
 	; Checks
-		pkg_linter=0
-		setup_sub_dir=0
-		setup_root=0
+		pkg_linter=1
+		setup_sub_dir=1
+		setup_root=1
 		setup_nourl=0
 		setup_private=0
-		setup_public=0
-		upgrade=0
+		setup_public=1
+		upgrade=1
 		# test upgrade from latest published version
 		upgrade=1	from_commit=fd6350495d5a1d864ae30e1a61e18939fdb6a428
 		# test upgrade from latest git commit before Jibec's rewriting

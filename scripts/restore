@@ -74,9 +74,7 @@ ynh_system_user_create "$app"
 # RESTORE USER RIGHTS
 #=================================================
 
-chown "$app":"$app" -R "$final_path"
-find "$final_path"/ -type d -exec chmod 2755 {} \;
-find "$final_path"/ -type f -exec chmod g+r,o+r {} \;
+# no need, keep the default root:root
 
 #=================================================
 # SPECIFIC RESTORATION

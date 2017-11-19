@@ -127,6 +127,7 @@ ynh_system_user_create "$app"
 
 # Copy Files
 cp ../conf/syncserver.ini "$final_path/syncserver.ini"
+ynh_replace_string "__APP__"       "$app"        "$final_path/syncserver.ini"
 ynh_replace_string "__DOMAIN__"    "$domain"     "$final_path/syncserver.ini"
 ynh_replace_string "__PATH__"      "$path_url"   "$final_path/syncserver.ini"
 ynh_replace_string "__NAME__"      "$app"        "$final_path/syncserver.ini"
@@ -143,9 +144,7 @@ ynh_replace_string "__DB_NAME__"   "$db_name" "$final_path/syncserver.ini"
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
-chown "$app":"$app" -R "$final_path"
-find "$final_path"/ -type d -exec chmod 2755 {} \;
-find "$final_path"/ -type f -exec chmod g+r,o+r {} \;
+# no need, keep the default root:root
 
 #=================================================
 # SETUP LOGROTATE

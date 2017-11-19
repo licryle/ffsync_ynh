@@ -10,7 +10,7 @@ RemainAfterExit=yes
 WorkingDirectory=__FINALPATH__
 ExecStart=/usr/bin/uwsgi \
 	  --ini __FINALPATH__/syncserver.ini \
-	  --socket __FINALPATH__/socket
+	  --socket /tmp/__APP__.socket
 Restart=always
 StandardError=syslog
 
