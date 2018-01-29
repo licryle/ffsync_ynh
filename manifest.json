@@ -9,9 +9,8 @@
         "fr": "Le serveur de synchronisation de Mozilla, pour héberger vos données Firefox"
     },
     "maintainer": {
-        "name": "beudbeud",
-        "email": "beudbeud@beudibox.fr",
-        "url": "https://github.com/balu-/FSyncMS"
+        "name": "jibec",
+        "email": "jean-baptiste@holcroft.fr"
     },
     "requirements": {
         "yunohost": ">=2.7.0"

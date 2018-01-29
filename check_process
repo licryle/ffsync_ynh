@@ -1,5 +1,4 @@
-;; Test complet
-	auto_remove=1
+;; Test name
 	; Manifest
 		domain="domain.tld"	(DOMAIN)
 		path="/path"	(PATH)
@@ -11,21 +10,32 @@
 		setup_private=0
 		setup_public=1
 		upgrade=1
-		# test upgrade from latest published version
 		upgrade=1	from_commit=fd6350495d5a1d864ae30e1a61e18939fdb6a428
-		# test upgrade from latest git commit before Jibec's rewriting
 		upgrade=1	from_commit=267ccc21f7b52d22bc3d5b9cd6239857b9a82aad
 		backup_restore=1
 		multi_instance=1
+		incorrect_path=1
 		port_already_use=0
+		change_url=0
 ;;; Levels
 	Level 1=auto
 	Level 2=auto
 	Level 3=auto
-	Level 4=1
+	# impossible with Firefox Sync (it uses Firefox Accounts)
+	Level 4=na
 	Level 5=auto
 	Level 6=auto
 	Level 7=auto
 	Level 8=0
 	Level 9=0
 	Level 10=0
+;;; Options
+Email=jean-baptiste@holcroft.fr
+Notification=fail
+;;; Upgrade options
+	; commit=fd6350495d5a1d864ae30e1a61e18939fdb6a428
+		name=latest published version
+		manifest_arg=domain=DOMAIN&path=PATH
+	; commit=267ccc21f7b52d22bc3d5b9cd6239857b9a82aad
+		name=latest git commit before Jibec's rewriting
+		manifest_arg=domain=DOMAIN&path=PATH
