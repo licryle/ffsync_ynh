@@ -79,7 +79,7 @@ ynh_mysql_setup_db "$db_user" "$db_name"
 #=================================================
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source "$final_path"
+ynh_setup_source_local "$final_path"
 
 # Modify assets to take path into account
 # TODO: try to include this as a patch if still needed
@@ -149,13 +149,24 @@ ynh_replace_string "__DB_NAME__"   "$db_name" "$final_path/syncserver.ini"
 # ynh_replace_string "media\/img@$path_url\/media\/img@g" $final_path/syncserver/page/sync_files/responsive-bundle.css
 
 #=================================================
-# make
+# pip installation
 #=================================================
 
+virtualenv "$final_path/local"
 # Init virtualenv
 (
+	set +o nounset
+	source "$final_path/local/bin/activate"
+	set -o nounset
 	cd "$final_path"
-	make build
+	pip install --upgrade pip
+	CFLAGS="-Wno-error -Wno-error=format-security" \
+		ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" \
+		pip install --requirement "$final_path/requirements.txt"
+
+	python "$final_path/setup.py" develop
+
+	touch "$final_path/local/COMPLETE"
 )
 
 #=================================================
