@@ -60,7 +60,7 @@ ynh_app_setting_set "$app" final_path "$final_path"
 #=================================================
 
 # Check depends installation
-ynh_install_app_dependencies make python-dev python-virtualenv \
+ynh_install_app_dependencies python-dev python-virtualenv \
 			 uwsgi uwsgi-plugin-python
 
 #=================================================
