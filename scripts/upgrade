@@ -101,7 +101,7 @@ ynh_install_app_dependencies python-dev python-virtualenv \
 #=================================================
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source_local "$final_path"
+ynh_setup_source "$final_path"
 
 #=================================================
 # NGINX CONFIGURATION

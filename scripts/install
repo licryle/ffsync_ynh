@@ -79,7 +79,7 @@ ynh_mysql_setup_db "$db_user" "$db_name"
 #=================================================
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source_local "$final_path"
+ynh_setup_source "$final_path"
 
 # Modify assets to take path into account
 # TODO: try to include this as a patch if still needed

@@ -12,6 +12,10 @@
         "name": "jibec",
         "email": "jean-baptiste@holcroft.fr"
     },
+    "previous_maintainers": [{
+        "name": "beudbeud",
+        "email": "beudbeud@beudibox.fr"
+    }],
     "requirements": {
         "yunohost": ">=3.0.0"
 	},
