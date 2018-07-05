@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 #=================================================
 # GENERIC START
 #=================================================
@@ -24,20 +23,10 @@ db_name=$app
 #=================================================
 # STANDARD REMOVE
 #=================================================
-# STOP AND REMOVE SERVICE
+# REMOVE UWSGI
 #=================================================
 
-ynh_remove_systemd_config
-
-#=================================================
-# REMOVE SERVICE FROM ADMIN PANEL
-#=================================================
-
-if yunohost service status | grep -q "$app"
-then
-	echo "Remove $app service"
-	yunohost service remove "$app"
-fi
+ynh_remove_uwsgi_service
 
 #=================================================
 # REMOVE DEPENDENCIES

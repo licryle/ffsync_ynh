@@ -114,10 +114,10 @@ ynh_system_user_create "$app" "$final_path"
 #=================================================
 # SPECIFIC SETUP
 #=================================================
-# SETUP SYSTEMD
+# SETUP UWSGI
 #=================================================
 
-ynh_add_systemd_config
+ynh_add_uwsgi_service
 
 #=================================================
 # create config file syncserver.ini
@@ -128,17 +128,19 @@ secret=$(ynh_string_random)
 ynh_app_setting_set "$app" secret "$secret"
 
 # Copy Files
-cp ../conf/syncserver.ini "$final_path/syncserver.ini"
-ynh_replace_string "__APP__"       "$app"        "$final_path/syncserver.ini"
-ynh_replace_string "__DOMAIN__"    "$domain"     "$final_path/syncserver.ini"
-ynh_replace_string "__PATH__"      "$path_url"   "$final_path/syncserver.ini"
-ynh_replace_string "__NAME__"      "$app"        "$final_path/syncserver.ini"
-ynh_replace_string "__FINALPATH__" "$final_path" "$final_path/syncserver.ini"
-ynh_replace_string "__SECRET__"    "$secret"     "$final_path/syncserver.ini"
+ynh_replace_string "__APP__"       "$app"        "$finaluwsgiini"
+ynh_replace_string "__DOMAIN__"    "$domain"     "$finaluwsgiini"
+ynh_replace_string "__PATH__"      "$path_url"   "$finaluwsgiini"
+ynh_replace_string "__NAME__"      "$app"        "$finaluwsgiini"
+ynh_replace_string "__FINALPATH__" "$final_path" "$finaluwsgiini"
+ynh_replace_string "__SECRET__"    "$secret"     "$finaluwsgiini"
 
-ynh_replace_string "__DB_USER__"   "$db_user" "$final_path/syncserver.ini"
-ynh_replace_string "__DB_PWD__"    "$db_pwd"  "$final_path/syncserver.ini"
-ynh_replace_string "__DB_NAME__"   "$db_name" "$final_path/syncserver.ini"
+ynh_replace_string "__DB_USER__"   "$db_user" "$finaluwsgiini"
+ynh_replace_string "__DB_PWD__"    "$db_pwd"  "$finaluwsgiini"
+ynh_replace_string "__DB_NAME__"   "$db_name" "$finaluwsgiini"
+
+rm "$final_path/syncserver.ini"
+ln -s "$finaluwsgiini" "$final_path/syncserver.ini"
 
 #=================================================
 # MODIFY A CONFIG FILE
@@ -184,12 +186,6 @@ virtualenv "$final_path/local"
 ynh_use_logrotate
 
 #=================================================
-# ADVERTISE SERVICE IN ADMIN PANEL
-#=================================================
-
-yunohost service add "$app" -l /var/log/$app/$app.log
-
-#=================================================
 # SETUP SSOWAT
 #=================================================
 
@@ -200,5 +196,5 @@ ynh_app_setting_set "$app" skipped_uris "/"
 # RELOAD NGINX
 #=================================================
 
-systemctl start "$app.service"
+systemctl start "uwsgi-app@$app.service"
 systemctl reload nginx

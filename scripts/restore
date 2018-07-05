@@ -86,17 +86,37 @@ ynh_install_app_dependencies python-dev python-virtualenv \
 			 uwsgi uwsgi-plugin-python
 
 #=================================================
+# RESTORE THE UWSGI MECANICS
+#=================================================
+
+ynh_restore_file "/etc/systemd/system/uwsgi-app@.service"
+
+# make sure the folder for sockets exists and set authorizations
+mkdir -p /var/run/uwsgi/
+chown root:www-data /var/run/uwsgi/
+chmod -R 775 /var/run/uwsgi/
+
+# make sure the folder for logs exists and set authorizations
+mkdir -p /var/log/uwsgi/app/
+chown root:www-data /var/log/uwsgi/app/
+chmod -R 775 /var/log/uwsgi/app/
+
+#=================================================
+# RESTORE SERVICE
+#=================================================
+
+usermod --append --groups www-data "$app"
+
+ynh_restore_file "/etc/uwsgi/apps-available/$app.ini"
+
+systemctl daemon-reload
+systemctl enable "uwsgi-app@$app.service"
+
+#=================================================
 # ADVERTISE SERVICE IN ADMIN PANEL
 #=================================================
 
-yunohost service add "$app" --log "/var/log/$app/$app.log"
-
-#=================================================
-# RESTORE SYSTEMD
-#=================================================
-
-ynh_restore_file "/etc/systemd/system/$app.service"
-systemctl enable "$app.service"
+yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
 
 #=================================================
 # RESTORE THE LOGROTATE CONFIGURATION
@@ -110,5 +130,5 @@ ynh_restore_file "/etc/logrotate.d/$app"
 # RELOAD NGINX AND PHP-FPM
 #=================================================
 
-systemctl start "$app.service"
+systemctl start "uwsgi-app@$app.service"
 systemctl reload nginx

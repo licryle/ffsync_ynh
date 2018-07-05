@@ -60,7 +60,8 @@ ynh_mysql_dump_db "$db_name" > db.sql
 ynh_backup "/etc/logrotate.d/$app"
 
 #=================================================
-# BACKUP SYSTEMD
+# BACKUP THE UWSGI FILES
 #=================================================
 
-ynh_backup "/etc/systemd/system/$app.service"
+ynh_backup "/etc/uwsgi/apps-available/$app.ini"
+ynh_backup "/etc/systemd/system/uwsgi-app@.service"
