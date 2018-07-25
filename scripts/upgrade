@@ -202,5 +202,5 @@ ynh_app_setting_set "$app" skipped_uris "/"
 # RELOAD NGINX
 #=================================================
 
-systemctl start "uwsgi-app@$app.service"
+systemctl start "$app.service"
 systemctl reload nginx

@@ -3,17 +3,15 @@
 ynh_check_global_uwsgi_config () {
 	uwsgi --version || ynh_die "You need to add uwsgi (and appropriate plugin) as a dependency"
 
-	cp ../conf/uwsgi-app@.service /etc/systemd/system/uwsgi-app@.service
-
 	# make sure the folder for sockets exists and set authorizations
 	mkdir -p /var/run/uwsgi/
 	chown root:www-data /var/run/uwsgi/
 	chmod -R 775 /var/run/uwsgi/
 
 	# make sure the folder for logs exists and set authorizations
-	mkdir -p /var/log/uwsgi/app/
-	chown root:www-data /var/log/uwsgi/app/
-	chmod -R 775 /var/log/uwsgi/app/
+	mkdir -p /var/log/$app/
+	chown root:www-data /var/log/$app/
+	chmod -R 775 /var/log/$app/
 }
 
 # Create a dedicated uwsgi ini file to use with generic uwsgi service
@@ -54,13 +52,33 @@ ynh_add_uwsgi_service () {
 	fi
 	ynh_store_file_checksum "$finaluwsgiini"
 
-	chown root: "$finaluwsgiini"
+	chown $app:www-data "$finaluwsgiini"
+
+	finalservice="/etc/systemd/system/$app.service"
+	ynh_backup_if_checksum_is_different "$finalservice"
+	cp ../conf/systemd.service "$finalservice"
+
+	# To avoid a break by set -u, use a void substitution ${var:-}. If the variable is not set, it's simply set with an empty variable.
+	# Substitute in a nginx config file only if the variable is not empty
+	if test -n "${final_path:-}"; then
+		ynh_replace_string "__FINALPATH__" "$final_path" "$finalservice"
+	fi
+	if test -n "${path_url:-}"; then
+		ynh_replace_string "__PATH__" "$path_url" "$finalservice"
+	fi
+	if test -n "${app:-}"; then
+		ynh_replace_string "__APP__" "$app" "$finalservice"
+	fi
+	
+	ynh_store_file_checksum "$finalservice"
+
+	chown $app:www-data "$finalservice"
 
 	systemctl daemon-reload
-	systemctl enable "uwsgi-app@$app.service"
+	systemctl enable "$app"
 
 	# Add as a service
-	yunohost service add "uwsgi-app@$app.service" --log "/var/log/uwsgi/app/$app"
+	yunohost service add "$app" --log "/var/log/$app/service.log"
 }
 
 # Remove the dedicated uwsgi ini file
@@ -69,11 +87,11 @@ ynh_add_uwsgi_service () {
 ynh_remove_uwsgi_service () {
 	finaluwsgiini="/etc/uwsgi/apps-available/$app.ini"
 	if [ -e "$finaluwsgiini" ]; then
-		systemctl stop "uwsgi-app@$app.service"
-		systemctl disable "uwsgi-app@$app.service"
-		yunohost service remove "uwsgi-app@$app.service"
+		systemctl stop "$app"
+		systemctl disable "$app"
+		yunohost service remove "$app"
 
 		ynh_secure_remove "$finaluwsgiini"
-		ynh_secure_remove "/var/log/uwsgi/app/$app"
+		ynh_secure_remove "/var/log/$app/service.log"
 	fi
 }
